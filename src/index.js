@@ -21,24 +21,17 @@ class Board extends React.Component {
     }
 
     render() {
+        const boardSize = 3;
+        let squares = [];
+        for (let i = 0; i < boardSize; i++) {
+            let row = [];
+            for (let j = 0; j < boardSize; j++) {
+                row.push(this.renderSquare(i * boardSize + j));
+            }
+            squares.push(<div key={i} className={"board-row"}>{row}</div>);
+        }
         return (
-            <div>
-                <div className="board-row">
-                    {this.renderSquare(0)}
-                    {this.renderSquare(1)}
-                    {this.renderSquare(2)}
-                </div>
-                <div className="board-row">
-                    {this.renderSquare(3)}
-                    {this.renderSquare(4)}
-                    {this.renderSquare(5)}
-                </div>
-                <div className="board-row">
-                    {this.renderSquare(6)}
-                    {this.renderSquare(7)}
-                    {this.renderSquare(8)}
-                </div>
-            </div>
+            <div>{squares}</div>
         );
     }
 }
@@ -49,9 +42,12 @@ class Game extends React.Component {
         this.state = {
             history: [{
                 squares: Array(9).fill(null),
+                row: null,
+                col: null
             }],
             stepNumber: 0,
             xIsNext: true,
+            selectedStep: 0,
         }
     }
 
@@ -63,12 +59,18 @@ class Game extends React.Component {
             return;
         }
         squares[i] = this.state.xIsNext ? 'X' : 'O';
+
+        const rowCol = calculateRowCol(i);
+
         this.setState({
             history: history.concat([{
                 squares: squares,
+                row: rowCol.row,
+                col: rowCol.col,
             }]),
             stepNumber: history.length,
             xIsNext: !this.state.xIsNext,
+            selectedStep: history.length
         });
     }
 
@@ -76,6 +78,7 @@ class Game extends React.Component {
         this.setState({
             stepNumber: step,
             xIsNext: (step % 2) === 0,
+            selectedStep: step
         })
     }
 
@@ -88,9 +91,10 @@ class Game extends React.Component {
             const desc = move ?
                 'Go to move #' + move :
                 'Go to game start';
+            const coordinates = step.row ? ' (' + step.row + ', ' + step.col + ')' : '';
             return (
-                <li key={move}>
-                    <button onClick={() => this.jumpTo(move)}>{desc}</button>
+                <li key={move} className={move === this.state.selectedStep ? 'selected-step' : 'unselected-step'}>
+                    <button onClick={() => this.jumpTo(move)}>{desc}{coordinates}</button>
                 </li>
             );
         })
@@ -144,4 +148,11 @@ function calculateWinner(squares) {
         }
     }
     return null;
+}
+
+function calculateRowCol(i) {
+    return {
+        row: Math.floor(i / 3) + 1,
+        col: i % 3 + 1,
+    }
 }
