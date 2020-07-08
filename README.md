@@ -1,3 +1,7 @@
+# React Tic Tac Toe
+
+my solution for react's official tutorial (WIP)
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
