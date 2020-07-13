@@ -94,7 +94,7 @@ class Game extends React.Component {
         const current = history[this.state.stepNumber];
         const winner = calculateWinner(current.squares);
 
-        let moves = history.map((step, move) => {
+        const moves = history.map((step, move) => {
             const desc = move ?
                 'Go to move #' + move :
                 'Go to game start';
@@ -107,7 +107,7 @@ class Game extends React.Component {
         });
 
         if (this.state.sortOrder !== 'ASC') {
-            moves = moves.reverse();
+            moves.reverse();
         }
 
         let status;
